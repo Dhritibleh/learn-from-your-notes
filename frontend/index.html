@@ -1,59 +1,413 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Learn From Your Notes</title>
-  <style>
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f8; margin: 0; padding: 40px; }
-    .container { max-width: 800px; margin: 0 auto; background: #ffffff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-    h1 { text-align: center; color: #333; }
-    .section { border-bottom: 1px solid #eee; padding-bottom: 20px; margin-bottom: 20px; }
-    label { font-weight: bold; display: block; margin-bottom: 8px; }
-    input[type="file"] { width: 100%; margin-bottom: 15px; }
-    button { background-color: #007bff; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; }
-    button:hover { background-color: #0056b3; }
-    #output { background: #1e1e1e; color: #00ff66; padding: 15px; border-radius: 5px; overflow-x: auto; font-family: monospace; }
-  </style>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+    <title>Learn From Your Notes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 40px;
+        }
+        .container {
+            max-width: 850px;
+            margin: auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .section {
+            margin-top: 25px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+        input[type="file"],
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 15px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #status {
+            margin-top: 25px;
+            font-weight: bold;
+        }
+        .question {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        .option {
+            display: block;
+            margin: 12px 0;
+            cursor: pointer;
+        }
+        .option input {
+            margin-right: 8px;
+        }
+        #submitButton {
+            display: none;
+            margin-top: 25px;
+        }
+        #result {
+            margin-top: 25px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .error {
+            color: red;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
+<div class="container">
     <h1>📚 Learn From Your Notes</h1>
     <div class="section">
-      <label for="pdfFile">Upload Study PDF</label>
-      <input type="file" id="pdfFile" accept="application/pdf" />
-      <button onclick="generateQuiz()">Generate Quiz</button>
-    </div>
+        <h2>📄 Upload Study PDF</h2>
+        <input
+            type="file"
+            id="pdfFile"
+            accept="application/pdf"
+        >
+        <button onclick="generateFromPDF()">
+            Generate Quiz
+        </button>
+      </div>
     <div class="section">
-      <label>Generated JSON Output</label>
-      <pre id="output">Waiting for upload...</pre>
+        <h2>🔗 Study Webpage</h2>
+        <input
+            type="text"
+            id="urlInput"
+            placeholder="Paste webpage URL here"
+        >
+        <button onclick="generateFromURL()">
+            Generate Quiz
+        </button>
     </div>
-  </div>
-  <script>
-    async function generateQuiz() {
-      const fileInput = document.getElementById('pdfFile');
-      const output = document.getElementById('output');
-      if (!fileInput.files[0]) {
-        alert("Please select a PDF file first.");
+    <div id="status">
+        Waiting for study material...
+    </div>
+    <div id="quiz"></div>
+    <button
+        id="submitButton"
+        onclick="submitQuiz()"
+    >
+        Submit Quiz
+    </button>
+    <div id="result"></div>
+</div>
+<script>
+let currentQuiz = null;
+
+
+// ===============================
+// PDF QUIZ
+// ===============================
+
+async function generateFromPDF() {
+    const fileInput =
+        document.getElementById("pdfFile");
+    const file =
+        fileInput.files[0];
+    if (!file) {
+        alert("Please select a PDF first.");
         return;
-      }
-      output.innerText = "Processing PDF via Gemini AI... Please wait...";
-      const formData = new FormData();
-      formData.append("file", fileInput.files[0]);
-      try {
-        const response = await fetch("http://127.0.0.1:8000/generate/file", {
-          method: "POST",
-          body: formData
-        });
-        if (!response.ok) {
-          throw new Error(`Server returned error status ${response.status}`);
-        }
-        const data = await response.json();
-        output.innerText = JSON.stringify(data, null, 2);
-      } catch (err) {
-        output.innerText = "Error connecting to backend: " + err.message;
-      }
     }
-  </script>
+    const formData =
+        new FormData();
+    formData.append(
+        "file",
+        file
+    );
+    setStatus(
+        "📄 Processing PDF..."
+    );
+    try {
+        const response =
+            await fetch(
+                "/generate/file",
+                {
+                    method: "POST",
+                    body: formData
+                }
+            );
+        const data =
+            await response.json();
+        if (!response.ok) {
+            throw new Error(
+                data.detail ||
+                "Something went wrong."
+            );
+        }
+        displayQuiz(data.quiz);
+    }
+    catch (error) {
+        showError(
+            error.message
+        );
+
+    }
+
+}
+
+
+// ===============================
+// URL QUIZ
+// ===============================
+
+async function generateFromURL() {
+
+    const url =
+        document
+            .getElementById("urlInput")
+            .value
+            .trim();
+
+
+    if (!url) {
+
+        alert(
+            "Please enter a webpage URL."
+        );
+
+        return;
+    }
+
+
+    setStatus(
+        "🔗 Processing webpage..."
+    );
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/generate/url",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        url: url
+                    })
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                "Something went wrong."
+            );
+        }
+
+
+        displayQuiz(data.quiz);
+
+    }
+
+    catch (error) {
+
+        showError(
+            error.message
+        );
+
+    }
+
+}
+
+
+// ===============================
+// DISPLAY QUIZ
+// ===============================
+
+function displayQuiz(quiz) {
+
+    currentQuiz = quiz;
+
+
+    setStatus(
+        "🧠 Quiz generated successfully!"
+    );
+
+
+    const quizContainer =
+        document.getElementById("quiz");
+
+
+    quizContainer.innerHTML = "";
+
+
+    const heading =
+        document.createElement("h2");
+
+
+    heading.innerText =
+        "Topic: " + quiz.topic;
+
+
+    quizContainer.appendChild(
+        heading
+    );
+    quiz.questions.forEach(
+        (question, index) => {
+            const questionDiv =
+                document.createElement("div");
+            questionDiv.className =
+                "question";
+            const questionTitle =
+                document.createElement("h3");
+            questionTitle.innerText =
+                `${index + 1}. ${question.question}`;
+            questionDiv.appendChild(
+                questionTitle
+            );
+            question.options.forEach(
+                (option) => {
+                    const label =
+                        document.createElement(
+                            "label"
+                        );
+                    label.className =
+                        "option";
+                    const radio =
+                        document.createElement(
+                            "input"
+                        );
+                    radio.type =
+                        "radio";
+                    radio.name =
+                        "question" + index;
+                    radio.value =
+                        option;
+                    label.appendChild(
+                        radio
+                    );
+                    label.appendChild(
+                        document.createTextNode(
+                            option
+                        )
+                    );
+                    questionDiv.appendChild(
+                        label
+                    );
+                }
+            );
+            quizContainer.appendChild(
+                questionDiv
+            );
+        }
+    );
+    document.getElementById(
+        "submitButton"
+    ).style.display = "block";
+    document.getElementById(
+        "result"
+    ).innerText = "";
+}
+// ===============================
+// SUBMIT QUIZ
+// ===============================
+function submitQuiz() {
+    if (!currentQuiz) {
+        return;
+    }
+    let score = 0;
+    currentQuiz.questions.forEach(
+        (question, index) => {
+            const selected =
+                document.querySelector(
+                    `input[name="question${index}"]:checked`
+                );
+
+
+            if (
+                selected &&
+                selected.value ===
+                question.answer
+            ) {
+
+                score++;
+            }
+        }
+    );
+    const total =
+        currentQuiz.questions.length;
+    const percentage =
+        (score / total) * 100;
+    document.getElementById(
+        "result"
+    ).innerText =
+        `🎉 Score: ${score}/${total} (${percentage.toFixed(1)}%)`;
+}
+// ===============================
+// STATUS
+// ===============================
+
+function setStatus(message) {
+    const status =
+        document.getElementById(
+            "status"
+        );
+    status.className = "";
+    status.innerText =
+        message;
+}
+// ===============================
+// ERROR
+// ===============================
+function showError(message) {
+    const status =
+        document.getElementById(
+            "status"
+        );
+    status.className =
+        "error";
+    status.innerText =
+        "❌ " + message;
+    document.getElementById(
+        "quiz"
+    ).innerHTML = "";
+    document.getElementById(
+        "submitButton"
+    ).style.display = "none";
+}
+</script>
 </body>
 </html>
