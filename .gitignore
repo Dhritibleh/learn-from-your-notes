@@ -1,4 +1,6 @@
 __pycache__/
-node_modules/
+venv/
 .env
+node_modules/
 dist/
+notes_app.db
