@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Learn From Your Notes</title>
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f8; margin: 0; padding: 40px; }
+    .container { max-width: 800px; margin: 0 auto; background: #ffffff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    h1 { text-align: center; color: #333; }
+    .section { border-bottom: 1px solid #eee; padding-bottom: 20px; margin-bottom: 20px; }
+    label { font-weight: bold; display: block; margin-bottom: 8px; }
+    input[type="file"] { width: 100%; margin-bottom: 15px; }
+    button { background-color: #007bff; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; }
+    button:hover { background-color: #0056b3; }
+    #output { background: #1e1e1e; color: #00ff66; padding: 15px; border-radius: 5px; overflow-x: auto; font-family: monospace; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📚 Learn From Your Notes</h1>
+    <div class="section">
+      <label for="pdfFile">Upload Study PDF</label>
+      <input type="file" id="pdfFile" accept="application/pdf" />
+      <button onclick="generateQuiz()">Generate Quiz</button>
+    </div>
+    <div class="section">
+      <label>Generated JSON Output</label>
+      <pre id="output">Waiting for upload...</pre>
+    </div>
+  </div>
+  <script>
+    async function generateQuiz() {
+      const fileInput = document.getElementById('pdfFile');
+      const output = document.getElementById('output');
+      if (!fileInput.files[0]) {
+        alert("Please select a PDF file first.");
+        return;
+      }
+      output.innerText = "Processing PDF via Gemini AI... Please wait...";
+      const formData = new FormData();
+      formData.append("file", fileInput.files[0]);
+      try {
+        const response = await fetch("http://127.0.0.1:8000/generate/file", {
+          method: "POST",
+          body: formData
+        });
+        if (!response.ok) {
+          throw new Error(`Server returned error status ${response.status}`);
+        }
+        const data = await response.json();
+        output.innerText = JSON.stringify(data, null, 2);
+      } catch (err) {
+        output.innerText = "Error connecting to backend: " + err.message;
+      }
+    }
+  </script>
+</body>
+</html>
