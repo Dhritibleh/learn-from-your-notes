@@ -1,154 +1,1324 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0"
     >
+
     <title>Learn From Your Notes</title>
+
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f8;
-            margin: 0;
-            padding: 40px;
-        }
-        .container {
-            max-width: 850px;
-            margin: auto;
-            background-color: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        .section {
-            margin-top: 25px;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-        }
-        input[type="file"],
-        input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
+
+        * {
             box-sizing: border-box;
         }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #1f2937;
+        }
+
+        .container {
+            width: min(1050px, 92%);
+            margin: 30px auto 60px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+        }
+
+        .card {
+            background: white;
+            border-radius: 14px;
+            padding: 22px;
+            margin-bottom: 18px;
+            box-shadow: 0 5px 18px rgba(0,0,0,.07);
+        }
+
+        .row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: end;
+        }
+
+        .field {
+            flex: 1;
+            min-width: 240px;
+        }
+
+        label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 7px;
+        }
+
+        input[type="file"],
+        input[type="url"] {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #d1d5db;
+            border-radius: 9px;
+        }
+
         button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 6px;
+            border: 0;
+            border-radius: 9px;
+            padding: 11px 16px;
             cursor: pointer;
-            margin-top: 10px;
-            font-size: 15px;
+            font-weight: 700;
+            background: #111827;
+            color: white;
         }
-        button:hover {
-            background-color: #0056b3;
+
+        button.secondary {
+            background: #4b5563;
         }
-        #status {
-            margin-top: 25px;
-            font-weight: bold;
+
+        button.success {
+            background: #166534;
         }
-        .question {
-            margin-top: 20px;
-            padding: 20px;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            border: 1px solid #ddd;
+
+        button.warning {
+            background: #9a3412;
         }
+
+        button:disabled {
+            opacity: .6;
+            cursor: not-allowed;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .status {
+            padding: 12px;
+            border-radius: 9px;
+            margin-bottom: 18px;
+            background: #eef2ff;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .success-box {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .summary {
+            line-height: 1.7;
+            white-space: pre-wrap;
+        }
+
+        .topic-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            margin-top: 12px;
+            overflow: hidden;
+        }
+
+        .topic-header {
+            width: 100%;
+            background: white;
+            color: #111827;
+            text-align: left;
+            padding: 15px;
+            border-radius: 0;
+            font-size: 1rem;
+        }
+
+        .topic-header:hover {
+            background: #f9fafb;
+        }
+
+        .topic-content {
+            padding: 0 16px 16px;
+            line-height: 1.6;
+        }
+
+        .topic-content ul {
+            margin-top: 8px;
+        }
+
+        .quiz-question {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 14px;
+        }
+
+        .question-label {
+            color: #6b7280;
+            font-size: .9rem;
+            margin-bottom: 7px;
+        }
+
+        .importance {
+            display: inline-block;
+            font-size: .8rem;
+            padding: 5px 9px;
+            border-radius: 999px;
+            background: #f3f4f6;
+            margin-bottom: 9px;
+        }
+
         .option {
             display: block;
-            margin: 12px 0;
-            cursor: pointer;
+            margin: 11px 0;
+            font-weight: normal;
         }
-        .option input {
-            margin-right: 8px;
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 18px;
         }
-        #submitButton {
-            display: none;
-            margin-top: 25px;
+
+        .score {
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 5px 0 12px;
         }
-        #result {
-            margin-top: 25px;
-            font-size: 20px;
-            font-weight: bold;
+
+        .result-item {
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 12px;
         }
-        .error {
-            color: red;
+
+        .result-item.correct {
+            border-left: 5px solid #16a34a;
         }
+
+        .result-item.wrong {
+            border-left: 5px solid #dc2626;
+        }
+
+        .answer-line {
+            margin: 7px 0;
+            line-height: 1.5;
+        }
+
+        .weak-box {
+            margin-top: 22px;
+            padding: 18px;
+            border-radius: 12px;
+            background: #fff7ed;
+        }
+
+        .weak-topic {
+            padding: 12px;
+            margin-top: 10px;
+            border-radius: 9px;
+            background: white;
+            border: 1px solid #fed7aa;
+        }
+
+        .review-card {
+            margin-top: 12px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid #fed7aa;
+        }
+
+        .small-note {
+            font-size: .9rem;
+            color: #6b7280;
+        }
+
+        @media (max-width: 700px) {
+
+            button {
+                width: 100%;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+        }
+
     </style>
+
 </head>
+
+
 <body>
+
 <div class="container">
-    <h1>📚 Learn From Your Notes</h1>
-    <div class="section">
-        <h2>📄 Upload Study PDF</h2>
-        <input
-            type="file"
-            id="pdfFile"
-            accept="application/pdf"
+
+    <header>
+
+        <h1>📚 Learn From Your Notes</h1>
+
+        <div class="subtitle">
+
+            Turn your study material into summaries,
+            explanations and high-yield quizzes.
+
+        </div>
+
+    </header>
+
+
+    <!-- INPUT -->
+
+    <section class="card">
+
+        <h2>📄 Start Learning</h2>
+
+        <div class="row">
+
+            <div class="field">
+
+                <label for="pdfFile">
+                    Upload your PDF
+                </label>
+
+                <input
+                    id="pdfFile"
+                    type="file"
+                    accept="application/pdf"
+                >
+
+            </div>
+
+            <button id="pdfBtn">
+                Generate From PDF
+            </button>
+
+        </div>
+
+
+        <hr
+            style="
+                margin:20px 0;
+                border:0;
+                border-top:1px solid #e5e7eb;
+            "
         >
-        <button onclick="generateFromPDF()">
-            Generate Quiz
-        </button>
-      </div>
-    <div class="section">
-        <h2>🔗 Study Webpage</h2>
-        <input
-            type="text"
-            id="urlInput"
-            placeholder="Paste webpage URL here"
-        >
-        <button onclick="generateFromURL()">
-            Generate Quiz
-        </button>
-    </div>
-    <div id="status">
-        Waiting for study material...
-    </div>
-    <div id="quiz"></div>
-    <button
-        id="submitButton"
-        onclick="submitQuiz()"
+
+
+        <div class="row">
+
+            <div class="field">
+
+                <label for="urlInput">
+                    Study material URL
+                </label>
+
+                <input
+                    id="urlInput"
+                    type="url"
+                    placeholder="https://example.com/notes"
+                >
+
+            </div>
+
+            <button id="urlBtn">
+                Generate From URL
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- STATUS -->
+
+    <div
+        id="status"
+        class="status hidden"
+    ></div>
+
+
+    <!-- MATERIAL -->
+
+    <section
+        id="materialSection"
+        class="card hidden"
     >
-        Submit Quiz
-    </button>
-    <div id="result"></div>
+
+        <h2>📖 Material Overview</h2>
+
+        <p>
+            <strong>Subject:</strong>
+            <span id="subject"></span>
+        </p>
+
+        <p>
+            <strong>Main topic:</strong>
+            <span id="mainTopic"></span>
+        </p>
+
+
+        <h3>📝 Summary</h3>
+
+        <div
+            id="summary"
+            class="summary"
+        ></div>
+
+
+        <h3 style="margin-top:25px;">
+            📚 Topic-by-topic explanation
+        </h3>
+
+        <div class="small-note">
+            Click a topic to expand its explanation.
+        </div>
+
+        <div id="topics"></div>
+
+    </section>
+
+
+    <!-- QUIZ -->
+
+    <section
+        id="quizSection"
+        class="card hidden"
+    >
+
+        <h2>🧠 Quiz</h2>
+
+        <div
+            id="quizMeta"
+            class="subtitle"
+        ></div>
+
+        <div id="questions"></div>
+
+
+        <div class="actions">
+
+            <button
+                id="submitBtn"
+                class="success"
+            >
+                ✅ Submit Quiz
+            </button>
+
+            <button
+                id="newQuizBtn"
+                class="secondary"
+            >
+                🔄 Generate New Quiz
+            </button>
+
+            <button
+                id="weakQuizBtn"
+                class="warning hidden"
+            >
+                🎯 Practice Weak Topics
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- RESULTS -->
+
+    <section
+        id="resultSection"
+        class="card hidden"
+    >
+
+        <h2>📊 Your Result</h2>
+
+        <div
+            id="score"
+            class="score"
+        ></div>
+
+        <div id="resultMessage"></div>
+
+        <div id="results"></div>
+
+
+        <!-- WEAK TOPICS -->
+
+        <div
+            id="weakBox"
+            class="weak-box hidden"
+        >
+
+            <h3>
+                ⚠️ Topics that need more practice
+            </h3>
+
+            <p>
+                Topics below 40% are tracked.
+                Review the notes below and attempt
+                a focused quiz again.
+            </p>
+
+            <div id="weakTopics"></div>
+
+            <h3 style="margin-top:20px;">
+                📖 Recommended review
+            </h3>
+
+            <div id="weakReviews"></div>
+
+        </div>
+
+    </section>
+
 </div>
+
+
 <script>
-let currentQuiz = null;
 
 
-// ===============================
-// PDF QUIZ
-// ===============================
+let materialId = null;
+
+let quizId = null;
+
+let currentQuestions = [];
+
+let weakTopicNames = [];
+
+
+
+const pdfFile =
+    document.getElementById("pdfFile");
+
+const urlInput =
+    document.getElementById("urlInput");
+
+const pdfBtn =
+    document.getElementById("pdfBtn");
+
+const urlBtn =
+    document.getElementById("urlBtn");
+
+const statusBox =
+    document.getElementById("status");
+
+const materialSection =
+    document.getElementById("materialSection");
+
+const quizSection =
+    document.getElementById("quizSection");
+
+const resultSection =
+    document.getElementById("resultSection");
+
+const submitBtn =
+    document.getElementById("submitBtn");
+
+const newQuizBtn =
+    document.getElementById("newQuizBtn");
+
+const weakQuizBtn =
+    document.getElementById("weakQuizBtn");
+
+const questionsBox =
+    document.getElementById("questions");
+
+
+
+function escapeHtml(value) {
+
+    return String(value ?? "")
+        .replace(
+            /[&<>"']/g,
+            function(char) {
+
+                return {
+                    "&": "&amp;",
+                    "<": "&lt;",
+                    ">": "&gt;",
+                    '"': "&quot;",
+                    "'": "&#039;"
+                }[char];
+
+            }
+        );
+
+}
+
+
+
+function setStatus(
+    message,
+    type = "normal"
+) {
+
+    statusBox.textContent =
+        message;
+
+    statusBox.className =
+        "status";
+
+    if (type === "error") {
+
+        statusBox.classList.add("error");
+
+    }
+
+    if (type === "success") {
+
+        statusBox.classList.add("success-box");
+
+    }
+
+    statusBox.classList.remove("hidden");
+
+}
+
+
+
+function setLoading(
+    loading
+) {
+
+    pdfBtn.disabled = loading;
+
+    urlBtn.disabled = loading;
+
+    submitBtn.disabled = loading;
+
+    newQuizBtn.disabled = loading;
+
+    weakQuizBtn.disabled = loading;
+
+}
+
+
+
+async function getErrorMessage(
+    response
+) {
+
+    try {
+
+        const data =
+            await response.json();
+
+        if (
+            typeof data.detail ===
+            "string"
+        ) {
+
+            return data.detail;
+
+        }
+
+        return JSON.stringify(data);
+
+    } catch {
+
+        return `Request failed (${response.status}).`;
+
+    }
+
+}
+
+
+
+function renderMaterial(data) {
+
+    materialId =
+        data.material_id;
+
+    quizId =
+        data.quiz_id;
+
+    currentQuestions =
+        data.questions || [];
+
+
+    document.getElementById(
+        "subject"
+    ).textContent =
+        data.subject || "Unknown";
+
+
+    document.getElementById(
+        "mainTopic"
+    ).textContent =
+        data.topic || "General";
+
+
+    document.getElementById(
+        "summary"
+    ).textContent =
+        data.summary ||
+        "No summary available.";
+
+
+    renderTopics(
+        data.topics || []
+    );
+
+
+    materialSection.classList.remove(
+        "hidden"
+    );
+
+
+    renderQuiz(
+        data.questions || []
+    );
+
+
+    resultSection.classList.add(
+        "hidden"
+    );
+
+}
+
+
+
+function renderTopics(topics) {
+
+    const topicsBox =
+        document.getElementById("topics");
+
+
+    topicsBox.innerHTML = "";
+
+
+    topics.forEach(
+        (topic, index) => {
+
+            const card =
+                document.createElement("div");
+
+            card.className =
+                "topic-card";
+
+
+            card.innerHTML = `
+
+                <button
+                    type="button"
+                    class="topic-header"
+                >
+
+                    ▶ ${escapeHtml(
+                        index + 1
+                    )}.
+                    ${escapeHtml(
+                        topic.name
+                    )}
+
+                </button>
+
+
+                <div
+                    class="topic-content hidden"
+                >
+
+                    <p>
+
+                        ${escapeHtml(
+                            topic.explanation
+                        )}
+
+                    </p>
+
+
+                    <strong>
+                        Key points
+                    </strong>
+
+                    <ul>
+
+                        ${
+                            (
+                                topic.key_points
+                                || []
+                            )
+                            .map(
+                                point =>
+                                    `<li>${escapeHtml(point)}</li>`
+                            )
+                            .join("")
+                        }
+
+                    </ul>
+
+
+                    <strong>
+                        Common mistakes
+                    </strong>
+
+                    <ul>
+
+                        ${
+                            (
+                                topic.common_mistakes
+                                || []
+                            )
+                            .map(
+                                mistake =>
+                                    `<li>${escapeHtml(mistake)}</li>`
+                            )
+                            .join("")
+                        }
+
+                    </ul>
+
+                </div>
+            `;
+
+
+            const header =
+                card.querySelector(
+                    ".topic-header"
+                );
+
+            const content =
+                card.querySelector(
+                    ".topic-content"
+                );
+
+
+            header.addEventListener(
+                "click",
+                () => {
+
+                    const isHidden =
+                        content.classList.contains(
+                            "hidden"
+                        );
+
+
+                    content.classList.toggle(
+                        "hidden"
+                    );
+
+
+                    header.textContent =
+                        isHidden
+                            ? `▼ ${index + 1}. ${topic.name}`
+                            : `▶ ${index + 1}. ${topic.name}`;
+
+                }
+            );
+
+
+            topicsBox.appendChild(
+                card
+            );
+
+        }
+    );
+
+}
+
+
+function renderQuiz(questions) {
+
+    currentQuestions =
+        questions || [];
+
+
+    quizSection.classList.remove(
+        "hidden"
+    );
+
+
+    document.getElementById(
+        "quizMeta"
+    ).textContent =
+
+        `${currentQuestions.length} questions • answers and explanations appear after submission`;
+
+
+    questionsBox.innerHTML =
+        "";
+
+
+    currentQuestions.forEach(
+        (q, index) => {
+
+            const div =
+                document.createElement("div");
+
+            div.className =
+                "quiz-question";
+
+
+            div.innerHTML = `
+
+                <div class="question-label">
+
+                    Question ${index + 1}
+                    •
+                    ${escapeHtml(
+                        q.topic
+                    )}
+
+                </div>
+
+
+                <div class="importance">
+
+                    ${escapeHtml(
+                        q.importance
+                        || "high-yield"
+                    )}
+
+                    •
+
+                    ${escapeHtml(
+                        q.question_type
+                        || "exam-style"
+                    )}
+
+                </div>
+
+
+                <h3>
+
+                    ${escapeHtml(
+                        q.question
+                    )}
+
+                </h3>
+
+            `;
+
+
+            (
+                q.options || []
+            ).forEach(
+                (option, optionIndex) => {
+
+                    const label =
+                        document.createElement(
+                            "label"
+                        );
+
+                    label.className =
+                        "option";
+
+
+                    label.innerHTML = `
+
+                        <input
+                            type="radio"
+                            name="q${index}"
+                            value="${escapeHtml(option)}"
+                        >
+
+                        ${String.fromCharCode(
+                            65 + optionIndex
+                        )}.
+
+                        ${escapeHtml(
+                            option
+                        )}
+                    `;
+
+
+                    div.appendChild(
+                        label
+                    );
+
+                }
+            );
+
+
+            questionsBox.appendChild(
+                div
+            );
+
+        }
+    );
+
+}
+
+
+
+function getAnswers() {
+
+    return currentQuestions.map(
+        (_, index) => {
+
+            const selected =
+                document.querySelector(
+                    `input[name="q${index}"]:checked`
+                );
+
+            return selected
+                ? selected.value
+                : "";
+
+        }
+    );
+
+}
+
+
+
+function renderResults(data) {
+
+    document.getElementById(
+        "score"
+    ).textContent =
+        `${data.score}/${data.total} (${data.percentage}%)`;
+
+
+    const weakTopics =
+        data.weak_topics || [];
+
+
+    if (weakTopics.length > 0) {
+
+        document.getElementById(
+            "resultMessage"
+        ).textContent =
+            "Some topics need more practice. Review the material below and try a focused quiz.";
+
+    } else {
+
+        document.getElementById(
+            "resultMessage"
+        ).textContent =
+            "✅ No topic is currently being tracked.";
+
+    }
+
+
+    const resultsBox =
+        document.getElementById("results");
+
+
+    resultsBox.innerHTML =
+        "";
+
+
+    (
+        data.results || []
+    ).forEach(
+        (item, index) => {
+
+            const div =
+                document.createElement("div");
+
+            div.className =
+                "result-item " +
+                (
+                    item.is_correct
+                        ? "correct"
+                        : "wrong"
+                );
+
+
+            div.innerHTML = `
+
+                <strong>
+
+                    Q${index + 1}.
+                    ${escapeHtml(
+                        item.question
+                    )}
+
+                </strong>
+
+
+                <div class="answer-line">
+
+                    <strong>
+                        Your answer:
+                    </strong>
+
+                    ${escapeHtml(
+                        item.selected_answer
+                    )}
+
+                </div>
+
+
+                <div class="answer-line">
+
+                    <strong>
+                        Correct answer:
+                    </strong>
+
+                    ${escapeHtml(
+                        item.correct_answer
+                    )}
+
+                </div>
+
+
+                <div class="answer-line">
+
+                    <strong>
+                        💡 Explanation:
+                    </strong>
+
+                    ${escapeHtml(
+                        item.explanation
+                    )}
+
+                </div>
+
+            `;
+
+
+            resultsBox.appendChild(
+                div
+            );
+
+        }
+    );
+
+
+    weakTopicNames =
+        weakTopics.map(
+            item =>
+                item.topic
+        );
+
+
+    if (weakTopicNames.length > 0) {
+
+        document.getElementById(
+            "weakBox"
+        ).classList.remove(
+            "hidden"
+        );
+
+
+        const weakTopicsBox =
+            document.getElementById(
+                "weakTopics"
+            );
+
+
+        weakTopicsBox.innerHTML =
+            "";
+
+
+        weakTopics.forEach(
+            item => {
+
+                const div =
+                    document.createElement(
+                        "div"
+                    );
+
+                div.className =
+                    "weak-topic";
+
+
+                div.innerHTML = `
+
+                    <strong>
+                        ${escapeHtml(
+                            item.topic
+                        )}
+                    </strong>
+
+                    <br>
+
+                    Current topic progress:
+                    ${Number(
+                        item.latest_percentage
+                    ).toFixed(1)}%
+
+                `;
+
+
+                weakTopicsBox.appendChild(
+                    div
+                );
+
+            }
+        );
+
+
+        const reviewsBox =
+            document.getElementById(
+                "weakReviews"
+            );
+
+
+        reviewsBox.innerHTML =
+            "";
+
+
+        (
+            data.weak_reviews || []
+        ).forEach(
+            review => {
+
+                const div =
+                    document.createElement(
+                        "div"
+                    );
+
+                div.className =
+                    "review-card";
+
+
+                div.innerHTML = `
+
+                    <h3>
+                        📖 ${escapeHtml(
+                            review.name
+                        )}
+                    </h3>
+
+
+                    <p>
+
+                        ${escapeHtml(
+                            review.explanation
+                        )}
+
+                    </p>
+
+
+                    <strong>
+                        Key points
+                    </strong>
+
+                    <ul>
+
+                        ${
+                            (
+                                review.key_points
+                                || []
+                            )
+                            .map(
+                                point =>
+                                    `<li>${escapeHtml(point)}</li>`
+                            )
+                            .join("")
+                        }
+
+                    </ul>
+
+
+                    <strong>
+                        Common mistakes
+                    </strong>
+
+                    <ul>
+
+                        ${
+                            (
+                                review.common_mistakes
+                                || []
+                            )
+                            .map(
+                                mistake =>
+                                    `<li>${escapeHtml(mistake)}</li>`
+                            )
+                            .join("")
+                        }
+
+                    </ul>
+
+                `;
+
+
+                reviewsBox.appendChild(
+                    div
+                );
+
+            }
+        );
+
+
+        weakQuizBtn.classList.remove(
+            "hidden"
+        );
+
+    } else {
+
+        document.getElementById(
+            "weakBox"
+        ).classList.add(
+            "hidden"
+        );
+
+        weakQuizBtn.classList.add(
+            "hidden"
+        );
+
+    }
+
+
+    resultSection.classList.remove(
+        "hidden"
+    );
+
+
+    resultSection.scrollIntoView({
+        behavior: "smooth"
+    });
+
+}
+
+
 
 async function generateFromPDF() {
-    const fileInput =
-        document.getElementById("pdfFile");
-    const file =
-        fileInput.files[0];
-    if (!file) {
-        alert("Please select a PDF first.");
+
+    if (
+        !pdfFile.files.length
+    ) {
+
+        setStatus(
+            "Please select a PDF first.",
+            "error"
+        );
+
         return;
     }
+
+
     const formData =
         new FormData();
+
+
     formData.append(
         "file",
-        file
+        pdfFile.files[0]
     );
-    setStatus(
-        "📄 Processing PDF..."
-    );
+
+
     try {
+
+        setLoading(true);
+
+
+        setStatus(
+            "Reading the PDF, checking the material, and generating your study content..."
+        );
+
+
         const response =
             await fetch(
                 "/generate/file",
@@ -157,55 +1327,75 @@ async function generateFromPDF() {
                     body: formData
                 }
             );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                await getErrorMessage(
+                    response
+                )
+            );
+
+        }
+
+
         const data =
             await response.json();
-        if (!response.ok) {
-            throw new Error(
-                data.detail ||
-                "Something went wrong."
-            );
-        }
-        displayQuiz(data.quiz);
-    }
-    catch (error) {
-        showError(
-            error.message
+
+
+        renderMaterial(
+            data
         );
 
+
+        setStatus(
+            "✅ Study material accepted!",
+            "success"
+        );
+
+    } catch (error) {
+
+        setStatus(
+            `❌ ${error.message}`,
+            "error"
+        );
+
+    } finally {
+
+        setLoading(false);
     }
 
 }
 
 
-// ===============================
-// URL QUIZ
-// ===============================
 
 async function generateFromURL() {
 
     const url =
-        document
-            .getElementById("urlInput")
-            .value
-            .trim();
+        urlInput.value.trim();
 
 
     if (!url) {
 
-        alert(
-            "Please enter a webpage URL."
+        setStatus(
+            "Please enter a URL first.",
+            "error"
         );
 
         return;
     }
 
 
-    setStatus(
-        "🔗 Processing webpage..."
-    );
-
-
     try {
+
+        setLoading(true);
+
+
+        setStatus(
+            "Reading the webpage, checking the material, and generating your study content..."
+        );
+
 
         const response =
             await fetch(
@@ -218,196 +1408,285 @@ async function generateFromURL() {
                             "application/json"
                     },
 
-                    body: JSON.stringify({
-                        url: url
-                    })
+                    body:
+                        JSON.stringify({
+                            url: url
+                        })
                 }
             );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                await getErrorMessage(
+                    response
+                )
+            );
+
+        }
 
 
         const data =
             await response.json();
 
 
+        renderMaterial(
+            data
+        );
+
+
+        setStatus(
+            "✅ Study material accepted!",
+            "success"
+        );
+
+    } catch (error) {
+
+        setStatus(
+            `❌ ${error.message}`,
+            "error"
+        );
+
+    } finally {
+
+        setLoading(false);
+    }
+
+}
+
+
+
+async function generateNewQuiz(
+    focusTopics = []
+) {
+
+    if (!materialId) {
+        return;
+    }
+
+
+    try {
+
+        setLoading(true);
+
+
+        resultSection.classList.add(
+            "hidden"
+        );
+
+
+        setStatus(
+            focusTopics.length
+                ? "🎯 Creating a fresh quiz focused on your weak topics..."
+                : "🔄 Creating a fresh quiz from the same notes..."
+        );
+
+
+        const response =
+            await fetch(
+                "/generate/new-quiz",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+                            material_id:
+                                materialId,
+
+                            question_count:
+                                10,
+
+                            focus_topics:
+                                focusTopics
+                        })
+                }
+            );
+
+
         if (!response.ok) {
 
             throw new Error(
-                data.detail ||
-                "Something went wrong."
+                await getErrorMessage(
+                    response
+                )
             );
+
         }
 
 
-        displayQuiz(data.quiz);
+        const data =
+            await response.json();
 
-    }
 
-    catch (error) {
+        quizId =
+            data.quiz_id;
 
-        showError(
-            error.message
+
+        renderQuiz(
+            data.questions
         );
 
+
+        setStatus(
+            focusTopics.length
+                ? "✅ Fresh weak-topic quiz generated!"
+                : "✅ Fresh quiz generated!",
+            "success"
+        );
+
+
+        quizSection.scrollIntoView({
+            behavior: "smooth"
+        });
+
+    } catch (error) {
+
+        setStatus(
+            `❌ ${error.message}`,
+            "error"
+        );
+
+    } finally {
+
+        setLoading(false);
     }
 
 }
 
 
-// ===============================
-// DISPLAY QUIZ
-// ===============================
 
-function displayQuiz(quiz) {
+async function submitQuiz() {
 
-    currentQuiz = quiz;
+    if (
+        !materialId ||
+        !quizId
+    ) {
 
-
-    setStatus(
-        "🧠 Quiz generated successfully!"
-    );
-
-
-    const quizContainer =
-        document.getElementById("quiz");
-
-
-    quizContainer.innerHTML = "";
-
-
-    const heading =
-        document.createElement("h2");
-
-
-    heading.innerText =
-        "Topic: " + quiz.topic;
-
-
-    quizContainer.appendChild(
-        heading
-    );
-    quiz.questions.forEach(
-        (question, index) => {
-            const questionDiv =
-                document.createElement("div");
-            questionDiv.className =
-                "question";
-            const questionTitle =
-                document.createElement("h3");
-            questionTitle.innerText =
-                `${index + 1}. ${question.question}`;
-            questionDiv.appendChild(
-                questionTitle
-            );
-            question.options.forEach(
-                (option) => {
-                    const label =
-                        document.createElement(
-                            "label"
-                        );
-                    label.className =
-                        "option";
-                    const radio =
-                        document.createElement(
-                            "input"
-                        );
-                    radio.type =
-                        "radio";
-                    radio.name =
-                        "question" + index;
-                    radio.value =
-                        option;
-                    label.appendChild(
-                        radio
-                    );
-                    label.appendChild(
-                        document.createTextNode(
-                            option
-                        )
-                    );
-                    questionDiv.appendChild(
-                        label
-                    );
-                }
-            );
-            quizContainer.appendChild(
-                questionDiv
-            );
-        }
-    );
-    document.getElementById(
-        "submitButton"
-    ).style.display = "block";
-    document.getElementById(
-        "result"
-    ).innerText = "";
-}
-// ===============================
-// SUBMIT QUIZ
-// ===============================
-function submitQuiz() {
-    if (!currentQuiz) {
         return;
     }
-    let score = 0;
-    currentQuiz.questions.forEach(
-        (question, index) => {
-            const selected =
-                document.querySelector(
-                    `input[name="question${index}"]:checked`
-                );
 
 
-            if (
-                selected &&
-                selected.value ===
-                question.answer
-            ) {
+    try {
 
-                score++;
-            }
+        setLoading(true);
+
+
+        setStatus(
+            "Checking your answers..."
+        );
+
+
+        const response =
+            await fetch(
+                "/submit-quiz",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+
+                            material_id:
+                                materialId,
+
+                            quiz_id:
+                                quizId,
+
+                            answers:
+                                getAnswers()
+
+                        })
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                await getErrorMessage(
+                    response
+                )
+            );
+
         }
-    );
-    const total =
-        currentQuiz.questions.length;
-    const percentage =
-        (score / total) * 100;
-    document.getElementById(
-        "result"
-    ).innerText =
-        `🎉 Score: ${score}/${total} (${percentage.toFixed(1)}%)`;
-}
-// ===============================
-// STATUS
-// ===============================
 
-function setStatus(message) {
-    const status =
-        document.getElementById(
-            "status"
+
+        const data =
+            await response.json();
+
+
+        renderResults(
+            data
         );
-    status.className = "";
-    status.innerText =
-        message;
-}
-// ===============================
-// ERROR
-// ===============================
-function showError(message) {
-    const status =
-        document.getElementById(
-            "status"
+
+
+        setStatus(
+            "✅ Quiz submitted!",
+            "success"
         );
-    status.className =
-        "error";
-    status.innerText =
-        "❌ " + message;
-    document.getElementById(
-        "quiz"
-    ).innerHTML = "";
-    document.getElementById(
-        "submitButton"
-    ).style.display = "none";
+
+    } catch (error) {
+
+        setStatus(
+            `❌ ${error.message}`,
+            "error"
+        );
+
+    } finally {
+
+        setLoading(false);
+    }
+
 }
+
+
+
+pdfBtn.addEventListener(
+    "click",
+    generateFromPDF
+);
+
+
+urlBtn.addEventListener(
+    "click",
+    generateFromURL
+);
+
+
+submitBtn.addEventListener(
+    "click",
+    submitQuiz
+);
+
+
+newQuizBtn.addEventListener(
+    "click",
+    () =>
+        generateNewQuiz([])
+);
+
+
+weakQuizBtn.addEventListener(
+    "click",
+    () =>
+        generateNewQuiz(
+            weakTopicNames
+        )
+);
+
+
 </script>
+
 </body>
+
 </html>
