@@ -3,7 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 from PyPDF2 import PdfReader
 
-MAX_CHARS = 4000
+MAX_CHARS = 100000
 
 
 def extract_text_from_pdf_bytes(file_bytes: bytes) -> str:
