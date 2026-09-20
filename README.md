@@ -18,6 +18,39 @@ study material into active learning content.
 - Generate focused quizzes for weak topics
 - Stop tracking a topic after the student's performance improves
 
+## How It Works
+
+```text
+📄 Upload PDF / Enter URL
+        ↓
+   📥 Extract Text
+        ↓
+ 🔍 Check Study Material
+        ↓
+   📝 Generate Summary
+        ↓
+ 📚 Identify Major Topics
+        ↓
+📖 Topic-wise Explanations
+        ↓
+    🧠 Generate Quiz
+        ↓
+   ✏️ Answer Quiz
+        ↓
+📊 Score + Explanations
+        ↓
+ ⚠️ Detect Weak Topics
+        ↓
+  📖 Targeted Review
+        ↓
+🎯 Focused Weak-Topic Quiz
+        ↓
+📈 Improved Performance
+        ↓
+  Stop Tracking Topic
+```
+
+
 ## Tech Stack
 
 - Frontend: HTML, CSS, JavaScript
