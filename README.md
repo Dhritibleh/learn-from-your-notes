@@ -1,2 +1,44 @@
-# learn-from-your-notes
-An interactive web app that turns study materials into summarized concepts, flashcards and practise quizzes.
+# Learn From Your Notes 📚
+
+Learn From Your Notes is an AI-powered study assistant that converts
+study material into active learning content.
+
+## Features
+
+- Upload study PDFs
+- Enter study-material URLs
+- Filter out unrelated/non-study content
+- Generate an overall summary
+- Generate topic-by-topic explanations
+- Generate 10 high-yield MCQs
+- Generate a fresh quiz from the same notes
+- Show correct answers and explanations after submission
+- Track weak topics
+- Provide review material for weak topics
+- Generate focused quizzes for weak topics
+- Stop tracking a topic after the student's performance improves
+
+## Tech Stack
+
+- Frontend: HTML, CSS, JavaScript
+- Backend: Python, FastAPI
+- AI: Google Gemini API
+- PDF Processing: PyPDF2
+- Web Parsing: BeautifulSoup4, Requests
+- Database: SQLite
+
+## Project Structure
+
+```text
+learn-from-your-notes/
+├── backend/
+│   ├── main.py
+│   ├── database.py
+│   ├── parsers.py
+│   └── venv/
+├── frontend/
+│   └── index.html
+├── .gitignore
+├── README.md
+├── requirements.txt
+└── notes_app.db
